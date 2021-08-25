@@ -107,8 +107,6 @@ class UsersController
                 if ($user != null) {
                     $links = $this->dbManager->Links->getAll($_SESSION['user_id']);
 
-                    $this->sendEmail($login, $name);
-
                     $this->view->redirect("links/getAll");
                 } else {
                     $this->view->redirect("users/signup");
