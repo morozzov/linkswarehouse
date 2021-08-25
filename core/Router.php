@@ -39,7 +39,7 @@ class Router
 
         if (file_exists($controllerPath) == false) {
 
-            $this->view->render("main", "shared/error404");
+            $this->view->render("sign", "shared/error404");
             die();
         }
 
@@ -49,7 +49,7 @@ class Router
         $action = $actionName;
 
         if (method_exists($controller, $action) == false) {
-            $this->view->render("main", "shared/error404");
+            $this->view->render("sign", "shared/error404");
             die();
         }
 
@@ -66,7 +66,7 @@ class Router
             }
 
         } catch (Exception $e) {
-            $this->view->render("main", "shared/error404");
+            $this->view->render("sign", "shared/error404");
         }
 
 

@@ -27,6 +27,18 @@ class LinksController
         }
     }
 
+    public function getBySearchAction()
+    {
+        $query = $_POST['query'];;
+        $id = $_SESSION['user_id'];
+        if ($id == null) {
+            $this->view->redirect("users/signin");
+        } else {
+            $links = $this->dbManager->Links->getBySearch($id, $query);
+            $this->view->render("main", "links/getAll", $links);
+        }
+    }
+
     public function getByIdAction()
     {
         $id = $_SESSION['user_id'];
@@ -59,9 +71,15 @@ class LinksController
         $date = $now->format('Y-m-d H:i:s');
 
         if ($name != "" && $url != "") {
-            $this->dbManager->Links->addNew($userId, $name, $text, $url, $date, $visibility);
+            if (filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED)) {
 
-            $this->view->redirect("links/getById");
+                $this->dbManager->Links->addNew($userId, $name, $text, $url, $date, $visibility);
+
+                $this->view->redirect("links/getById");
+            } else {
+                $this->view->redirect("links/addForm");
+            }
+
         } else {
             $this->view->redirect("links/addForm");
         }
@@ -93,9 +111,14 @@ class LinksController
         $date = $now->format('Y-m-d H:i:s');
 
         if ($name != "" && $url != "") {
-            $this->dbManager->Links->edit($rowId, $userId, $name, $text, $url, $date, $visibility);
+            if (filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED)) {
 
-            $this->view->redirect("links/getById");
+                $this->dbManager->Links->edit($rowId, $userId, $name, $text, $url, $date, $visibility);
+
+                $this->view->redirect("links/getById");
+            } else {
+                $this->view->redirect("links/getById");
+            }
         } else {
             $this->view->redirect("links/getById");
         }
@@ -109,4 +132,6 @@ class LinksController
 
         $this->view->redirect("links/getById");
     }
+
+
 }

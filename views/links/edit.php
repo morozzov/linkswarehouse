@@ -26,7 +26,7 @@
                     </div>
                     <div class="row">
                         <div class="col-auto">
-                            <div class='form-control border-0' method='post'>
+                            <div class='form border-0' method='post'>
                                 <input type='text' value="<?= $row->Id ?>" hidden='hidden' name='rowId'>
                                 <input type='submit' class='btn btn-primary' value='Edit'>
                             </div>

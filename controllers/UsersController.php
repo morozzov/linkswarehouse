@@ -28,12 +28,21 @@ class UsersController
 
     public function signinAction()
     {
-        $this->view->render("sign", "users/signin");
+        $id = $_SESSION['user_id'];
+        if ($id == null) {
+            $this->view->render("sign", "users/signin");
+        } else {
+            $this->view->redirect("links/getall");
+        }
+
     }
 
     public function signupAction()
     {
-        $this->view->render("sign", "users/signup");
+        $id = $_SESSION['user_id'];
+        if ($id == null) {
+            $this->view->render("sign", "users/signup");
+        }
     }
 
     public function authAction($post)
@@ -50,6 +59,41 @@ class UsersController
         }
     }
 
+    public function sendEmail($email, $name)
+    {
+        $code = substr(md5(uniqid(rand(), true)), 24, 8);
+
+        $to = $email;
+        $subject = "Welcome!";
+        //$message = 'hello';
+        $message = "
+<html>
+<head>
+  <title>Successful registration</title>
+</head>
+<body>
+  <p2>{$name}, thank you for registering on linkswarehouse.xyz</p2>
+</body>
+</html>
+";
+
+// To send HTML mail, the Content-type header must be set
+        $headers[] = 'MIME-Version: 1.0';
+        $headers[] = 'Content-type: text/html; charset=iso-8859-1';
+
+
+        $headers[] = 'To: Roman <romm858@mail.ru>';
+        $headers[] = 'From: Birthday Reminder <birthday@example.com>';
+        $headers[] = 'Cc: birthdayarchive@example.com';
+        $headers[] = 'Bcc: birthdaycheck@example.com';
+//        $headers = 'From: romm858@mail.ru' . "\r\n" .
+//            'Reply-To: romm858@mail.ru' . "\r\n" .
+//            'X-Mailer: PHP/' . phpversion();
+
+//        mail($to, $subject, $message, $headers);
+        mail($to, $subject, $message, implode("\r\n", $headers));
+    }
+
     public function addNewAction($post)
     {
         $name = $_POST['name'];
@@ -62,6 +106,9 @@ class UsersController
                 $user = $this->dbManager->Users->addNew($login, $password1, $name);
                 if ($user != null) {
                     $links = $this->dbManager->Links->getAll($_SESSION['user_id']);
+
+                    $this->sendEmail($login, $name);
+
                     $this->view->redirect("links/getAll");
                 } else {
                     $this->view->redirect("users/signup");
@@ -74,7 +121,8 @@ class UsersController
         }
     }
 
-    public function editAction($post)
+    public
+    function editAction($post)
     {
         $id = $_SESSION['user_id'];
         if ($id == null) {
@@ -98,9 +146,10 @@ class UsersController
         }
     }
 
-    public function logOutAction()
+    public
+    function logOutAction()
     {
-        session_destroy();
+        $_SESSION = array();
         $this->view->redirect("users/signin");
     }
 

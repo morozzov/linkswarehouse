@@ -29,6 +29,30 @@ class TableLinks
         return $links;
     }
 
+    public function getBySearch($id, $query): array
+    {
+        $db = DbConnector::getConnection();
+
+        $queryResult = $db->query("SELECT * FROM `links` WHERE (`userId` = {$id} OR `visibility` = 1) AND (`name` LIKE '%{$query}%' OR `about` LIKE '%{$query}%')");
+
+        $links = array();
+        while ($row = $queryResult->fetch_assoc()) {
+            $link = new Link(
+                $row["id"],
+                $row["userId"],
+                $row["name"],
+                $row["about"],
+                $row["url"],
+                $row["date"],
+                $row["visibility"]
+            );
+
+            array_push($links, $link);
+        }
+
+        return $links;
+    }
+
     public function deleteById($id)
     {
         $db = DbConnector::getConnection();

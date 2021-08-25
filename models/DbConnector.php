@@ -7,7 +7,7 @@ class DbConnector
     {
         $mysqli = new mysqli("localhost", "root", "root", "secondsite.loc");
 
-        $mysqli->set_charset("utf8");
+        $mysqli->set_charset("utf8_general_ci");
 
         return $mysqli;
     }

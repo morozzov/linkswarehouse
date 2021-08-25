@@ -4,13 +4,17 @@
 <!--        <h1>Page NOT found</h1>-->
 <!--    </div>-->
 <!--</article>-->
+
+<head>
+    <link href="/public/vendors/bootstrap502/css/signin.css" rel="stylesheet">
+</head>
 <div class="page-wrap d-flex flex-row align-items-center">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-12 text-center">
                 <span class="display-1 d-block">404</span>
                 <div class="mb-4 lead">The page you are looking for was not found.</div>
-                <a href="/links/getall" class="btn btn-link">Back to board</a>
+                <a href="/links/getall" class="btn btn-link">Back to site</a>
             </div>
         </div>
     </div>

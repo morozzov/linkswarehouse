@@ -15,7 +15,7 @@
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control" name="login"
                                placeholder="login" value="<?= $user->Login ?>">
-                        <label for="floatingInput">Your login</label>
+                        <label for="floatingInput">Your email</label>
                     </div>
                     <div class="form-floating mb-3">
                         <input type="password" class="form-control" name="password1"

@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="/public/vendors/bootstrap502/css/bootstrap.css">
 
     <link rel="shortcut icon" href="/img/chainIcon.svg">
-    <link href="/public/vendors/bootstrap502/css/signin.css" rel="stylesheet">
+
 
 </head>
 <body class="text-center">
