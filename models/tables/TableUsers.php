@@ -73,10 +73,10 @@ class TableUsers
     {
         $db = DbConnector::getConnection();
 
-        $queryResult = $db->query("SELECT * FROM `users` WHERE login='$login'");
+        $queryResult = $db->query("SELECT * FROM `users` WHERE login='{$login}'");
 
         if ($queryResult->num_rows == 0) {
-            $db->query("INSERT INTO `users` (`id`, `login`, `password`, `name`) VALUES (NULL, '$login', '$password', '$name');");
+            $db->query("INSERT INTO `users` (`id`, `login`, `password`, `name`) VALUES (NULL, '{$login}', '{$password}', '{$name}');");
 
             $queryResult = $db->query("SELECT * FROM `users` WHERE `login`='{$login}' AND `password`='{$password}'");
 

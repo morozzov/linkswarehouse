@@ -45,7 +45,7 @@ $url = strtolower($url[0]);
                     ?>">Your board</a></li>
             </ul>
 
-            <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" action="/links/getbysearch" method="post">
+            <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" action="/links/getbysearch" method="post" <?php if ($url != "/links/getall") {echo("hidden");} ?>>
                 <input type="search" name="query" class="form-control" placeholder="Search..." aria-label="Search">
             </form>
 

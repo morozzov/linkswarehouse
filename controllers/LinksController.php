@@ -35,7 +35,7 @@ class LinksController
             $this->view->redirect("users/signin");
         } else {
             $links = $this->dbManager->Links->getBySearch($id, $query);
-            $this->view->render("main", "links/getAll", $links);
+            $this->view->render("main", "links/getBySearch", $links);
         }
     }
 

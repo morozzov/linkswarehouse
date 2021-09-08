@@ -33,7 +33,7 @@ class TableLinks
     {
         $db = DbConnector::getConnection();
 
-        $queryResult = $db->query("SELECT * FROM `links` WHERE (`userId` = {$id} OR `visibility` = 1) AND (`name` LIKE '%{$query}%' OR `about` LIKE '%{$query}%')");
+        $queryResult = $db->query("SELECT * FROM `links` WHERE (`userId` = {$id} OR `visibility` = 1) AND (UPPER(`name`) LIKE UPPER('%{$query}%') OR UPPER(`about`) LIKE UPPER('%{$query}%'))");
 
         $links = array();
         while ($row = $queryResult->fetch_assoc()) {
