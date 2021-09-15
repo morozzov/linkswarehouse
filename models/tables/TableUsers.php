@@ -50,6 +50,8 @@ class TableUsers
 
     public function auth($login, $password)
     {
+        $password = hash('sha512',$password);
+
         $db = DbConnector::getConnection();
 
         $queryResult = $db->query("SELECT * FROM `users` WHERE `login`='{$login}' AND `password`='{$password}'");
@@ -71,6 +73,8 @@ class TableUsers
 
     public function addNew($login, $password, $name)
     {
+        $password = hash('sha512',$password);
+
         $db = DbConnector::getConnection();
 
         $queryResult = $db->query("SELECT * FROM `users` WHERE login='{$login}'");
@@ -99,7 +103,9 @@ class TableUsers
         $db = DbConnector::getConnection();
 
         if ($password1 == $password2 and $password1 != "") {
-            $db->query("UPDATE `users` SET `password` = '{$password1}' WHERE `users`.`id` = '{$id}';");
+            $password = hash('sha512',$password1);
+
+            $db->query("UPDATE `users` SET `password` = '{$password}' WHERE `users`.`id` = '{$id}';");
         }
 
         $result = $db->query("SELECT * FROM `users` WHERE (login='{$login}')");

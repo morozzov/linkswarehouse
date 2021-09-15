@@ -1,11 +1,11 @@
+
 <article class="card-body">
     <div class="container my-3">
 
         <a href="/links/getall" class="text-decoration-none">
-            <div class="row align-items-center rounded-3 linkCard border-dark border active text-decoration-none" style="color:#191c1f; ">
-
-                    <div class='p-1 ms-3'>
-                        <p class="lead">Back to all</p>
+            <div class="row align-items-center rounded-3 linkCard border-dark border active text-decoration-none p-1" style="color:#191c1f; ">
+                    <div class='p-1 ms-3 '>
+                        <p class="lead ">Back to all</p>
                     </div>
             </div>
         </a>
