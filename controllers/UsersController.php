@@ -58,11 +58,11 @@ class UsersController
         $remember = $post["remember"];
 
         if ($user != null) {
-            $this->view->redirect("links/getall");
-            if ($remember==1)
+            if ($remember == true)
             {
                 setcookie("user_id", $_SESSION['user_id'], time()+(1000 * 60 * 60 * 24 * 30));
             }
+            $this->view->redirect("links/getall");
         } else {
             $this->view->redirect("users/signin");
         }
