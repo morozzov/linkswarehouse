@@ -30,11 +30,16 @@ class UsersController
     {
         $id = $_SESSION['user_id'];
         if ($id == null) {
-            $this->view->render("sign", "users/signin");
+            $id = $_COOKIE["user_id"];
+            if ($id == null) {
+                $this->view->render("sign", "users/signin");
+            } else {
+                $_SESSION['user_id'] = $id;
+                $this->view->redirect("links/getall");
+            }
         } else {
-            $this->view->redirect("links/getall");
+                $this->view->redirect("links/getall");
         }
-
     }
 
     public function signupAction()
@@ -50,10 +55,14 @@ class UsersController
         $login = $post["login"];
         $password = $post["password"];
         $user = $this->dbManager->Users->auth($login, $password);
+        $remember = $post["remember"];
 
         if ($user != null) {
             $this->view->redirect("links/getall");
-
+            if ($remember==1)
+            {
+                setcookie("user_id", $_SESSION['user_id'], time()+(1000 * 60 * 60 * 24 * 30));
+            }
         } else {
             $this->view->redirect("users/signin");
         }
@@ -148,6 +157,7 @@ class UsersController
     function logOutAction()
     {
         $_SESSION = array();
+        setcookie("user_id",null, time()-3600);
         $this->view->redirect("users/signin");
     }
 

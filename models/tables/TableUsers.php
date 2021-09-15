@@ -66,6 +66,7 @@ class TableUsers
                 $row["login"],
                 $row["password"]
             );
+
             $_SESSION['user_id'] = $row["id"];
             return $user;
         }
