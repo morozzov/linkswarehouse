@@ -9,7 +9,7 @@ class TableLinks
     {
         $db = DbConnector::getConnection();
 
-        $queryResult = $db->query("SELECT * FROM `links` WHERE `userId` = {$id} OR `visibility` = 1");
+        $queryResult = $db->query("SELECT * FROM `links` WHERE `userId` = {$id} OR `visibility` = 1 ORDER BY `date` DESC");
 
         $links = array();
         while ($row = $queryResult->fetch_assoc()) {
@@ -33,7 +33,7 @@ class TableLinks
     {
         $db = DbConnector::getConnection();
 
-        $queryResult = $db->query("SELECT * FROM `links` WHERE (`userId` = {$id} OR `visibility` = 1) AND (UPPER(`name`) LIKE UPPER('%{$query}%') OR UPPER(`about`) LIKE UPPER('%{$query}%'))");
+        $queryResult = $db->query("SELECT * FROM `links` WHERE (`userId` = {$id} OR `visibility` = 1) AND (UPPER(`name`) LIKE UPPER('%{$query}%') OR UPPER(`about`) LIKE UPPER('%{$query}%')) ORDER BY `date` DESC");
 
         $links = array();
         while ($row = $queryResult->fetch_assoc()) {
@@ -64,7 +64,7 @@ class TableLinks
     {
         $db = DbConnector::getConnection();
 
-        $queryResult = $db->query("SELECT * FROM `links` WHERE `userId` = {$id}");
+        $queryResult = $db->query("SELECT * FROM `links` WHERE `userId` = {$id} ORDER BY `date` DESC");
 
         $links = array();
         while ($row = $queryResult->fetch_assoc()) {

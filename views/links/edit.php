@@ -22,7 +22,7 @@
                     <div class="checkbox mb-3">
                         <label>
                             <input type="checkbox" name="visibility"
-                                   value="visibility" <? if ($row->Visibility == 1) echo "checked" ?>> Visible
+                                   value="visibility" <?php if ($row->Visibility == 1) echo "checked" ?>> Visible
                         </label>
                     </div>
                     <div class="row">
