@@ -8,6 +8,11 @@ class UsersController
     private $dbManager;
     private $view;
 
+    public function isNotHtml($string)
+    {
+        return preg_match("/<[^<]+>/", $string, $m) == 0;
+    }
+
     public function __construct()
     {
         $this->dbManager = new DbManager();
@@ -38,7 +43,7 @@ class UsersController
                 $this->view->redirect("links/getall");
             }
         } else {
-                $this->view->redirect("links/getall");
+            $this->view->redirect("links/getall");
         }
     }
 
@@ -58,9 +63,8 @@ class UsersController
         $remember = $post["remember"];
 
         if ($user != null) {
-            if ($remember == true)
-            {
-                setcookie("user_id", $_SESSION['user_id'], time()+(1000 * 60 * 60 * 24 * 30));
+            if ($remember == true) {
+                setcookie("user_id", $_SESSION['user_id'], time() + (1000 * 60 * 60 * 24 * 30));
             }
             $this->view->redirect("links/getall");
         } else {
@@ -110,13 +114,17 @@ class UsersController
         $password1 = $_POST['password1'];
         $password2 = $_POST['password2'];
 
-        if (!empty($name) && !empty($login) && !empty($password1) && !empty($password2)) {
-            if ($password1 == $password2) {
-                $user = $this->dbManager->Users->addNew($login, $password1, $name);
-                if ($user != null) {
-                    $links = $this->dbManager->Links->getAll($_SESSION['user_id']);
+        if ($this->isNotHtml($name) && $this->isNotHtml($login) && $this->isNotHtml($password1)) {
+            if (!empty($name) && !empty($login) && !empty($password1) && !empty($password2)) {
+                if ($password1 == $password2) {
+                    $user = $this->dbManager->Users->addNew($login, $password1, $name);
+                    if ($user != null) {
+                        $links = $this->dbManager->Links->getAll($_SESSION['user_id']);
 
-                    $this->view->redirect("links/getAll");
+                        $this->view->redirect("links/getAll");
+                    } else {
+                        $this->view->redirect("users/signup");
+                    }
                 } else {
                     $this->view->redirect("users/signup");
                 }
@@ -140,10 +148,14 @@ class UsersController
             $password1 = $_POST['password1'];
             $password2 = $_POST['password2'];
 
-            if (!empty($name) && !empty($login)) {
-                if ($password1 == $password2) {
-                    $this->dbManager->Users->edit($id, $login, $password1, $password2, $name);
-                    $this->view->redirect("pages/personal");
+            if ($this->isNotHtml($name) && $this->isNotHtml($login) && $this->isNotHtml($password1)) {
+                if (!empty($name) && !empty($login)) {
+                    if ($password1 == $password2) {
+                        $this->dbManager->Users->edit($id, $login, $password1, $password2, $name);
+                        $this->view->redirect("pages/personal");
+                    } else {
+                        $this->view->redirect("pages/personal");
+                    }
                 } else {
                     $this->view->redirect("pages/personal");
                 }
@@ -157,7 +169,7 @@ class UsersController
     function logOutAction()
     {
         $_SESSION = array();
-        setcookie("user_id",null, time()-3600);
+        setcookie("user_id", null, time() - 3600);
         $this->view->redirect("users/signin");
     }
 

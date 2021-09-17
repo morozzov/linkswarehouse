@@ -10,6 +10,11 @@ class LinksController
     private $view;
     private $id;
 
+    public function isNotHtml($string)
+    {
+        return preg_match("/<[^<]+>/", $string, $m) == 0;
+    }
+
     public function __construct()
     {
         $this->dbManager = new DbManager();
@@ -31,11 +36,16 @@ class LinksController
     {
         $query = $_POST['query'];;
         $id = $_SESSION['user_id'];
-        if ($id == null) {
-            $this->view->redirect("users/signin");
+
+        if ($this->isNotHtml($query)) {
+            if ($id == null) {
+                $this->view->redirect("users/signin");
+            } else {
+                $links = $this->dbManager->Links->getBySearch($id, $query);
+                $this->view->render("main", "links/getBySearch", $links);
+            }
         } else {
-            $links = $this->dbManager->Links->getBySearch($id, $query);
-            $this->view->render("main", "links/getBySearch", $links);
+            $this->view->redirect("links/getall");
         }
     }
 
@@ -61,25 +71,29 @@ class LinksController
         $name = $_POST['name'];
         $text = $_POST['text'];
         $url = $_POST['url'];
-        $visibility = $_POST['visibility'];
-        if ($visibility == true) {
-            $visibility = 1;
-        } else {
-            $visibility = 0;
-        }
-        $now = new DateTime();
-        $date = $now->format('Y-m-d H:i:s');
 
-        if ($name != "" && $url != "") {
-            if (filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED)) {
+        if ($this->isNotHtml($name) && $this->isNotHtml($text) && $this->isNotHtml($url)) {
+            $visibility = $_POST['visibility'];
+            if ($visibility == true) {
+                $visibility = 1;
+            } else {
+                $visibility = 0;
+            }
+            $now = new DateTime();
+            $date = $now->format('Y-m-d H:i:s');
 
-                $this->dbManager->Links->addNew($userId, $name, $text, $url, $date, $visibility);
+            if ($name != "" && $url != "") {
+                if (filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED)) {
 
-                $this->view->redirect("links/getById");
+                    $this->dbManager->Links->addNew($userId, $name, $text, $url, $date, $visibility);
+
+                    $this->view->redirect("links/getById");
+                } else {
+                    $this->view->redirect("links/addForm");
+                }
             } else {
                 $this->view->redirect("links/addForm");
             }
-
         } else {
             $this->view->redirect("links/addForm");
         }
@@ -102,20 +116,25 @@ class LinksController
         $text = $_POST['text'];
         $url = $_POST['url'];
         $visibility = $_POST['visibility'];
-        if ($visibility == true) {
-            $visibility = 1;
-        } else {
-            $visibility = 0;
-        }
-        $now = new DateTime();
-        $date = $now->format('Y-m-d H:i:s');
 
-        if ($name != "" && $url != "") {
-            if (filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED)) {
+        if ($this->isNotHtml($name) && $this->isNotHtml($text) && $this->isNotHtml($url)) {
+            if ($visibility == true) {
+                $visibility = 1;
+            } else {
+                $visibility = 0;
+            }
+            $now = new DateTime();
+            $date = $now->format('Y-m-d H:i:s');
 
-                $this->dbManager->Links->edit($rowId, $userId, $name, $text, $url, $date, $visibility);
+            if ($name != "" && $url != "") {
+                if (filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED)) {
 
-                $this->view->redirect("links/getById");
+                    $this->dbManager->Links->edit($rowId, $userId, $name, $text, $url, $date, $visibility);
+
+                    $this->view->redirect("links/getById");
+                } else {
+                    $this->view->redirect("links/getById");
+                }
             } else {
                 $this->view->redirect("links/getById");
             }
