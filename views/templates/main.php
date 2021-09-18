@@ -51,7 +51,12 @@ $url = strtolower($url[0]);
 
             <div>
                 <a href="/pages/personal"">
-                <img src="/img/personal.svg"
+                <img src="/img/<?php if ($url == "/pages/personal") {
+                    echo("personalSecondary.svg");
+                } else {
+                    echo("personal.svg");
+                }
+                ?>"
                      alt="mdo" width="32" height="32" class="rounded-circle">
                 </a>
             </div>
