@@ -10,25 +10,56 @@ class LinksController
     private $view;
     private $id;
 
-    public function isNotHtml($string)
-    {
-        return preg_match("/<[^<]+>/", $string, $m) == 0;
-    }
-
     public function __construct()
     {
         $this->dbManager = new DbManager();
         $this->view = new View();
     }
 
+    #region methods
+    public function isNotHtml($string)
+    {
+        return preg_match("/<[^<]+>/", $string, $m) == 0;
+    }
+
+    public function isAutorized(): bool
+    {
+        $id = $_SESSION['user_id'];
+        if ($id == null) {
+            $id = $_COOKIE["user_id"];
+            if ($id == null) {
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            return true;
+        }
+    }
+    #endregion
+
+    #region  GET
     public function getAllAction()
+    {
+        $id = $_SESSION['user_id'];
+        if ($id == null) {
+            $id = $_COOKIE["user_id"];
+
+            $this->view->redirect("users/signin");
+        } else {
+            $links = $this->dbManager->Links->getAll($id);
+            $this->view->render("main", "links/getAll", $links);
+        }
+    }
+
+    public function getByIdAction()
     {
         $id = $_SESSION['user_id'];
         if ($id == null) {
             $this->view->redirect("users/signin");
         } else {
-            $links = $this->dbManager->Links->getAll($id);
-            $this->view->render("main", "links/getAll", $links);
+            $links = $this->dbManager->Links->getByUserId($id);
+            $this->view->render("main", "links/getById", $links);
         }
     }
 
@@ -49,17 +80,9 @@ class LinksController
         }
     }
 
-    public function getByIdAction()
-    {
-        $id = $_SESSION['user_id'];
-        if ($id == null) {
-            $this->view->redirect("users/signin");
-        } else {
-            $links = $this->dbManager->Links->getByUserId($id);
-            $this->view->render("main", "links/getById", $links);
-        }
-    }
+    #endregion
 
+    #region POST
     public function addFormAction()
     {
         $this->view->render("main", "links/add");
@@ -98,7 +121,9 @@ class LinksController
             $this->view->redirect("links/addForm");
         }
     }
+    #endregion
 
+    #region PUT
     public function editFormAction()
     {
         $rowId = $_POST['rowId'];
@@ -142,7 +167,9 @@ class LinksController
             $this->view->redirect("links/getById");
         }
     }
+    #endregion
 
+    #region DELETE
     public function deleteByIdAction($post)
     {
         $id = $post["id"];
@@ -151,6 +178,5 @@ class LinksController
 
         $this->view->redirect("links/getById");
     }
-
-
+    #endregion
 }

@@ -8,67 +8,30 @@ class UsersController
     private $dbManager;
     private $view;
 
-    public function isNotHtml($string)
-    {
-        return preg_match("/<[^<]+>/", $string, $m) == 0;
-    }
-
     public function __construct()
     {
         $this->dbManager = new DbManager();
         $this->view = new View();
     }
 
-    public function getAllAction()
+    #region methods
+    public function isNotHtml($string)
     {
-        $users = $this->dbManager->Users->getAll();
-        $this->view->render("main", "users/getAll", $users);
+        return preg_match("/<[^<]+>/", $string, $m) == 0;
     }
 
-    public function getByIdAction($id)
-    {
-        $user = $this->dbManager->Users->getById($id);
-        $this->view->render("main", "users/getById", $user);
-    }
-
-    public function signinAction()
+    public function isAutorized(): bool
     {
         $id = $_SESSION['user_id'];
         if ($id == null) {
             $id = $_COOKIE["user_id"];
             if ($id == null) {
-                $this->view->render("sign", "users/signin");
+                return false;
             } else {
-                $_SESSION['user_id'] = $id;
-                $this->view->redirect("links/getall");
+                return true;
             }
         } else {
-            $this->view->redirect("links/getall");
-        }
-    }
-
-    public function signupAction()
-    {
-        $id = $_SESSION['user_id'];
-        if ($id == null) {
-            $this->view->render("sign", "users/signup");
-        }
-    }
-
-    public function authAction($post)
-    {
-        $login = $post["login"];
-        $password = $post["password"];
-        $user = $this->dbManager->Users->auth($login, $password);
-        $remember = $post["remember"];
-
-        if ($user != null) {
-            if ($remember == true) {
-                setcookie("user_id", $_SESSION['user_id'], time() + (1000 * 60 * 60 * 24 * 30));
-            }
-            $this->view->redirect("links/getall");
-        } else {
-            $this->view->redirect("users/signin");
+            return true;
         }
     }
 
@@ -95,8 +58,8 @@ class UsersController
         $headers[] = 'Content-type: text/html; charset=iso-8859-1';
 
 
-        $headers[] = 'To: Roman <romm858@mail.ru>';
-        $headers[] = 'From: Birthday Reminder <birthday@example.com>';
+//        $headers[] = 'To: Roman <romm858@mail.ru>';
+        $headers[] = 'From: LinksWarehouse <birthday@example.com>';
         $headers[] = 'Cc: birthdayarchive@example.com';
         $headers[] = 'Bcc: birthdaycheck@example.com';
 //        $headers = 'From: romm858@mail.ru' . "\r\n" .
@@ -106,7 +69,58 @@ class UsersController
 //        mail($to, $subject, $message, $headers);
         mail($to, $subject, $message, implode("\r\n", $headers));
     }
+    #endregion
 
+    #region GET
+    public function getAllAction()
+    {
+        $users = $this->dbManager->Users->getAll();
+        $this->view->render("main", "users/getAll", $users);
+    }
+
+    public function getByIdAction($id)
+    {
+        $user = $this->dbManager->Users->getById($id);
+        $this->view->render("main", "users/getById", $user);
+    }
+
+    public function signinAction()
+    {
+        if ($this->isAutorized()) {
+            $this->view->redirect("links/getall");
+        } else {
+            $this->view->render("sign", "users/signin");
+        }
+    }
+
+    public function signupAction()
+    {
+        if ($this->isAutorized()) {
+            $this->view->redirect("links/getall");
+        } else {
+            $this->view->render("sign", "users/signup");
+        }
+    }
+
+    public function authAction($post)
+    {
+        $login = $post["login"];
+        $password = $post["password"];
+        $user = $this->dbManager->Users->auth($login, $password);
+        $remember = $post["remember"];
+
+        if ($user != null) {
+            if ($remember == true) {
+                setcookie("user_id", $_SESSION['user_id'], time() + (1000 * 60 * 60 * 24 * 30));
+            }
+            $this->view->redirect("links/getall");
+        } else {
+            $this->view->redirect("users/signin");
+        }
+    }
+    #endregion
+
+    #region POST
     public function addNewAction($post)
     {
         $name = $_POST['name'];
@@ -135,14 +149,13 @@ class UsersController
             $this->view->redirect("users/signup");
         }
     }
+    #endregion
 
-    public
-    function editAction($post)
+    #region PUT
+    public function editAction($post)
     {
         $id = $_SESSION['user_id'];
-        if ($id == null) {
-            $this->view->redirect("users/signin");
-        } else {
+        if ($this->isAutorized()) {
             $name = $_POST['name'];
             $login = $_POST['login'];
             $password1 = $_POST['password1'];
@@ -162,11 +175,13 @@ class UsersController
             } else {
                 $this->view->redirect("pages/personal");
             }
+        } else {
+            $this->view->redirect("users/signin");
         }
     }
+    #endregion
 
-    public
-    function logOutAction()
+    public function logOutAction()
     {
         $_SESSION = array();
         setcookie("user_id", null, time() - 3600);
