@@ -72,12 +72,6 @@ class UsersController
     #endregion
 
     #region GET
-    public function getAllAction()
-    {
-        $users = $this->dbManager->Users->getAll();
-        $this->view->render("main", "users/getAll", $users);
-    }
-
     public function getByIdAction($id)
     {
         $user = $this->dbManager->Users->getById($id);
