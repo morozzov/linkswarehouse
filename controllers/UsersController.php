@@ -28,6 +28,7 @@ class UsersController
             if ($id == null) {
                 return false;
             } else {
+                $_SESSION['user_id'] = $_COOKIE["user_id"];
                 return true;
             }
         } else {

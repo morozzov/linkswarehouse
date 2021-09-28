@@ -30,6 +30,7 @@ class LinksController
             if ($id == null) {
                 return false;
             } else {
+                $_SESSION['user_id'] = $_COOKIE["user_id"];
                 return true;
             }
         } else {
@@ -41,25 +42,23 @@ class LinksController
     #region  GET
     public function getAllAction()
     {
-        $id = $_SESSION['user_id'];
-        if ($id == null) {
-            $id = $_COOKIE["user_id"];
-
-            $this->view->redirect("users/signin");
-        } else {
+        if ($this->isAutorized()) {
+            $id = $_SESSION['user_id'];
             $links = $this->dbManager->Links->getAll($id);
             $this->view->render("main", "links/getAll", $links);
+        } else {
+            $this->view->redirect("users/signin");
         }
     }
 
     public function getByIdAction()
     {
-        $id = $_SESSION['user_id'];
-        if ($id == null) {
-            $this->view->redirect("users/signin");
-        } else {
+        if ($this->isAutorized()) {
+            $id = $_SESSION['user_id'];
             $links = $this->dbManager->Links->getByUserId($id);
             $this->view->render("main", "links/getById", $links);
+        } else {
+            $this->view->redirect("users/signin");
         }
     }
 
