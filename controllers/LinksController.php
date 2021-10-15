@@ -84,7 +84,11 @@ class LinksController
     #region POST
     public function addFormAction()
     {
-        $this->view->render("main", "links/add");
+        if ($this->isAutorized()) {
+            $this->view->render("main", "links/add");
+        } else {
+            $this->view->redirect("users/signin");
+        }
     }
 
     public function addNewAction()
@@ -125,11 +129,15 @@ class LinksController
     #region PUT
     public function editFormAction()
     {
-        $rowId = $_POST['rowId'];
+        if ($this->isAutorized()) {
+            $rowId = $_POST['rowId'];
 
-        $link = $this->dbManager->Links->getById($rowId);
+            $link = $this->dbManager->Links->getById($rowId);
 
-        $this->view->render("main", "links/edit", $link);
+            $this->view->render("main", "links/edit", $link);
+        } else {
+            $this->view->redirect("users/signin");
+        }
     }
 
     public function editAction()
